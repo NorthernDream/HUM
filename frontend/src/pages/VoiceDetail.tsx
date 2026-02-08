@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Descriptions, Button, Spin, message } from 'antd';
+import { Card, Button, Spin, message } from 'antd';
 import { ArrowLeftOutlined, DownloadOutlined } from '@ant-design/icons';
 import { getVoice, type Voice } from '../api/voices';
 import VoiceNFTMint from '../components/VoiceNFTMint';
+import { theme } from '../styles/theme';
 
 const VoiceDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,69 +33,284 @@ const VoiceDetail = () => {
   };
 
   const handleDownload = () => {
-    // 实现下载逻辑
     message.info('下载功能待实现');
   };
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '50px' }}>
+      <div style={{ textAlign: 'center', padding: '120px 0' }}>
         <Spin size="large" />
+        <div style={{ 
+          marginTop: theme.spacing.md, 
+          color: theme.colors.mutedText, 
+          fontSize: '16px',
+          fontFamily: theme.typography.body,
+        }}>
+          加载中...
+        </div>
       </div>
     );
   }
 
   if (!voice) {
-    return <div>角色不存在</div>;
+    return (
+      <div style={{ textAlign: 'center', padding: '120px 0' }}>
+        <div style={{ 
+          fontSize: '18px', 
+          color: theme.colors.mutedText,
+          fontFamily: theme.typography.body,
+        }}>角色不存在</div>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
       <Button
         icon={<ArrowLeftOutlined />}
         onClick={() => navigate(-1)}
-        style={{ marginBottom: '16px' }}
+        style={{ 
+          marginBottom: theme.spacing.lg,
+          borderRadius: theme.borderRadius.medium,
+          height: '48px',
+          fontSize: '15px',
+          fontFamily: theme.typography.body,
+        }}
       >
         返回
       </Button>
 
-      <Card title="角色详情">
-        <Descriptions column={2} bordered>
-          <Descriptions.Item label="Voice ID">{voice.id}</Descriptions.Item>
-          <Descriptions.Item label="Step Voice ID">{voice.stepVoiceId}</Descriptions.Item>
-          <Descriptions.Item label="模型">{voice.model}</Descriptions.Item>
-          <Descriptions.Item label="Embedding Hash">{voice.embeddingHash}</Descriptions.Item>
-          <Descriptions.Item label="创建时间">
-            {new Date(voice.createdAt).toLocaleString()}
-          </Descriptions.Item>
-          <Descriptions.Item label="更新时间">
-            {new Date(voice.updatedAt).toLocaleString()}
-          </Descriptions.Item>
+      <Card 
+        bordered={false}
+        style={{ 
+          background: theme.colors.warmWhite,
+          borderRadius: theme.borderRadius.large,
+          boxShadow: theme.shadows.card,
+          overflow: 'hidden',
+        }}
+        bodyStyle={{ padding: theme.spacing.xxl }}
+      >
+        <h2 style={{ 
+          margin: `0 0 ${theme.spacing.xl} 0`, 
+          fontFamily: theme.typography.display,
+          fontSize: '32px', 
+          fontWeight: 600,
+          color: theme.colors.charcoal,
+          letterSpacing: '-0.5px',
+        }}>
+          角色详情
+        </h2>
+
+        <div style={{ marginBottom: theme.spacing.xl }}>
+          <div style={{ 
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: theme.spacing.lg,
+          }}>
+            <div>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                Voice ID
+              </div>
+              <div style={{ 
+                padding: theme.spacing.md,
+                background: `linear-gradient(135deg, ${theme.colors.warmWhite} 0%, ${theme.colors.sage}10 100%)`,
+                borderRadius: theme.borderRadius.small,
+                fontFamily: theme.typography.mono,
+                fontSize: '13px',
+                color: theme.colors.charcoal,
+                wordBreak: 'break-all',
+                border: `1px solid ${theme.colors.sage}20`,
+              }}>
+                {voice.id}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                Step Voice ID
+              </div>
+              <div style={{ 
+                padding: theme.spacing.md,
+                background: `linear-gradient(135deg, ${theme.colors.warmWhite} 0%, ${theme.colors.sage}10 100%)`,
+                borderRadius: theme.borderRadius.small,
+                fontFamily: theme.typography.mono,
+                fontSize: '13px',
+                color: theme.colors.charcoal,
+                wordBreak: 'break-all',
+                border: `1px solid ${theme.colors.sage}20`,
+              }}>
+                {voice.stepVoiceId}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                模型
+              </div>
+              <div style={{ 
+                fontSize: '16px', 
+                color: theme.colors.charcoal,
+                fontFamily: theme.typography.mono,
+                fontWeight: 600,
+              }}>
+                {voice.model}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                Embedding Hash
+              </div>
+              <div style={{ 
+                padding: theme.spacing.md,
+                background: `linear-gradient(135deg, ${theme.colors.warmWhite} 0%, ${theme.colors.sage}10 100%)`,
+                borderRadius: theme.borderRadius.small,
+                fontFamily: theme.typography.mono,
+                fontSize: '13px',
+                color: theme.colors.charcoal,
+                wordBreak: 'break-all',
+                border: `1px solid ${theme.colors.sage}20`,
+              }}>
+                {voice.embeddingHash}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                创建时间
+              </div>
+              <div style={{ 
+                fontSize: '15px', 
+                color: theme.colors.charcoal,
+                fontFamily: theme.typography.body,
+              }}>
+                {new Date(voice.createdAt).toLocaleString('zh-CN')}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                更新时间
+              </div>
+              <div style={{ 
+                fontSize: '15px', 
+                color: theme.colors.charcoal,
+                fontFamily: theme.typography.body,
+              }}>
+                {new Date(voice.updatedAt).toLocaleString('zh-CN')}
+              </div>
+            </div>
+          </div>
+
           {voice.text && (
-            <Descriptions.Item label="音频文本" span={2}>
-              {voice.text}
-            </Descriptions.Item>
+            <div style={{ marginTop: theme.spacing.lg }}>
+              <div style={{ 
+                fontSize: '13px', 
+                color: theme.colors.mutedText, 
+                marginBottom: theme.spacing.sm, 
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                音频文本
+              </div>
+              <div style={{ 
+                padding: theme.spacing.md,
+                background: `linear-gradient(135deg, ${theme.colors.warmWhite} 0%, ${theme.colors.sage}15 100%)`,
+                borderRadius: theme.borderRadius.medium,
+                fontSize: '16px',
+                color: theme.colors.charcoal,
+                lineHeight: '1.7',
+                fontFamily: theme.typography.body,
+                border: `1px solid ${theme.colors.sage}30`,
+              }}>
+                {voice.text}
+              </div>
+            </div>
           )}
-        </Descriptions>
+        </div>
 
         {voice.sampleAudioPath && (
-          <div style={{ marginTop: '24px' }}>
-            <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>试听音频</div>
-            <audio controls style={{ width: '100%' }}>
+          <div style={{ 
+            padding: theme.spacing.xl,
+            background: `linear-gradient(135deg, ${theme.colors.warmWhite} 0%, ${theme.colors.sage}20 100%)`,
+            borderRadius: theme.borderRadius.medium,
+            border: `1px solid ${theme.colors.sage}30`,
+          }}>
+            <div style={{ 
+              fontSize: '16px', 
+              fontWeight: 600, 
+              color: theme.colors.charcoal,
+              marginBottom: theme.spacing.md,
+              fontFamily: theme.typography.display,
+            }}>
+              试听音频
+            </div>
+            <audio controls style={{ 
+              width: '100%', 
+              height: '48px', 
+              marginBottom: theme.spacing.md,
+              borderRadius: theme.borderRadius.small,
+            }}>
               <source src={voice.sampleAudioPath} type="audio/wav" />
             </audio>
             <Button
               icon={<DownloadOutlined />}
               onClick={handleDownload}
-              style={{ marginTop: '8px' }}
+              style={{ 
+                borderRadius: theme.borderRadius.small,
+                height: '40px',
+              }}
             >
-              下载
+              下载音频
             </Button>
           </div>
         )}
-
-        <VoiceNFTMint voiceId={voice.id} embeddingHash={voice.embeddingHash || ""} />
       </Card>
+
+      <VoiceNFTMint voiceId={voice.id} embeddingHash={voice.embeddingHash || ""} />
     </div>
   );
 };

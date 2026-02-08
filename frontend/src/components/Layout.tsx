@@ -36,24 +36,91 @@ const Layout = ({ children }: LayoutProps) => {
   ];
 
   return (
-    <AntLayout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
-      <Header style={{ display: 'flex', alignItems: 'center', background: '#001529', height: '64px' }}>
-        <div style={{ color: 'white', fontSize: '20px', fontWeight: 'bold', marginRight: '40px' }}>
+    <AntLayout style={{ minHeight: '100vh', background: 'transparent' }}>
+      <Header 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          background: 'rgba(253, 252, 251, 0.95)',
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E3E1DD',
+          padding: '0 48px',
+          height: '80px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+          boxShadow: '0 2px 16px rgba(131, 182, 146, 0.08)',
+        }}
+      >
+        <div style={{ 
+          fontFamily: '"Fraunces", Georgia, serif',
+          color: '#2D3436', 
+          fontSize: '28px', 
+          fontWeight: 700,
+          marginRight: '72px',
+          letterSpacing: '-0.5px',
+          background: 'linear-gradient(135deg, #83B692 0%, #6B9A7A 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}>
           本周之声
         </div>
         <Menu
-          theme="dark"
           mode="horizontal"
           selectedKeys={[location.pathname]}
           items={menuItems}
-          style={{ flex: 1, minWidth: 0, lineHeight: '64px' }}
+          style={{ 
+            flex: 1, 
+            minWidth: 0, 
+            border: 'none',
+            background: 'transparent',
+            fontSize: '15px',
+          }}
         />
       </Header>
-      <Content style={{ padding: '24px', background: '#f0f2f5', minHeight: 'calc(100vh - 128px)' }}>
-        {children}
+      
+      <Content style={{ 
+        padding: '56px 48px 80px', 
+        background: 'transparent',
+        minHeight: 'calc(100vh - 160px)',
+        position: 'relative',
+      }}>
+        {/* Decorative organic blobs */}
+        <div className="organic-blob" style={{
+          width: '600px',
+          height: '600px',
+          background: 'linear-gradient(135deg, #83B692 0%, #A5C9B3 100%)',
+          top: '-200px',
+          right: '-200px',
+        }} />
+        <div className="organic-blob" style={{
+          width: '400px',
+          height: '400px',
+          background: 'linear-gradient(135deg, #D4A574 0%, #E8A87C 100%)',
+          bottom: '-100px',
+          left: '-100px',
+        }} />
+        
+        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          {children}
+        </div>
       </Content>
-      <Footer style={{ textAlign: 'center', background: '#fff', padding: '16px' }}>
-        本周之声 ©2024
+      
+      <Footer style={{ 
+        textAlign: 'center', 
+        background: 'rgba(253, 252, 251, 0.8)',
+        backdropFilter: 'blur(12px)',
+        padding: '32px',
+        borderTop: '1px solid #E3E1DD',
+        color: '#636E72',
+        fontSize: '14px',
+        fontWeight: 500,
+      }}>
+        <div style={{ marginBottom: '8px' }}>本周之声 ©2024</div>
+        <div style={{ fontSize: '12px', color: '#95A5A6' }}>
+          用声音创造无限可能
+        </div>
       </Footer>
     </AntLayout>
   );
