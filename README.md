@@ -11,8 +11,10 @@
 - 🎭 **音色复刻**: 基于StepFun API进行音色复刻
 - 🎵 **TTS生成**: 使用复刻的音色生成语音
 - 🔢 **Embedding生成**: 临时使用随机向量作为embedding占位（后续可替换为真实codec模型）
-- � **Web3 NFT**: 支持将Voice ID和Embedding Hash铸造为NFT上传至0G测试网
-=======
+-  **Web3 NFT**: 支持将Voice ID和Embedding Hash铸造为NFT上传至0G测试网
+
+
+
 在互联网上，我们留下了太多文字、图片和数据。  
 但**声音**——最接近情绪、最私密、最像“人”的媒介，却始终只是一个临时的载体。
 
