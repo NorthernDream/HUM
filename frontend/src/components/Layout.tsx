@@ -64,7 +64,7 @@ const Layout = ({ children }: LayoutProps) => {
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
         }}>
-          本周之声
+          HUM｜人声余温
         </div>
         <Menu
           mode="horizontal"
@@ -117,7 +117,7 @@ const Layout = ({ children }: LayoutProps) => {
         fontSize: '14px',
         fontWeight: 500,
       }}>
-        <div style={{ marginBottom: '8px' }}>本周之声 ©2024</div>
+        <div style={{ marginBottom: '8px' }}>HUM｜人声余温 ©2024</div>
         <div style={{ fontSize: '12px', color: '#95A5A6' }}>
           用声音创造无限可能
         </div>
