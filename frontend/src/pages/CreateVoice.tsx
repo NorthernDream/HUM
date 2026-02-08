@@ -12,6 +12,7 @@ import { uploadFile } from '../api/files';
 import { createVoice } from '../api/voices';
 import AudioRecorder from '../components/AudioRecorder';
 import AudioWaveform from '../components/AudioWaveform';
+import VoiceNFTMint from '../components/VoiceNFTMint';
 
 type ProcessingStep = 'upload' | 'processing' | 'complete';
 
@@ -209,6 +210,8 @@ const CreateVoice = () => {
                     />
                   </div>
                 )}
+
+                <VoiceNFTMint voiceId={voiceResult.voiceId} embeddingHash={voiceResult.embeddingHash} />
 
                 <Button type="primary" onClick={handleReset} block>
                   创建新角色
