@@ -36,23 +36,62 @@ const Layout = ({ children }: LayoutProps) => {
   ];
 
   return (
-    <AntLayout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
-      <Header style={{ display: 'flex', alignItems: 'center', background: '#001529', height: '64px' }}>
-        <div style={{ color: 'white', fontSize: '20px', fontWeight: 'bold', marginRight: '40px' }}>
+    <AntLayout style={{ minHeight: '100vh', background: '#FFFFFF' }}>
+      <Header 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          background: '#FFFFFF',
+          borderBottom: '1px solid #E9ECEF',
+          padding: '0 48px',
+          height: '72px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+          boxShadow: '0 1px 3px rgba(44, 62, 80, 0.04)',
+        }}
+      >
+        <div style={{ 
+          color: '#2C3E50', 
+          fontSize: '20px', 
+          fontWeight: 600,
+          marginRight: '64px',
+          letterSpacing: '-0.5px',
+        }}>
           本周之声
         </div>
         <Menu
-          theme="dark"
           mode="horizontal"
           selectedKeys={[location.pathname]}
           items={menuItems}
-          style={{ flex: 1, minWidth: 0, lineHeight: '64px' }}
+          style={{ 
+            flex: 1, 
+            minWidth: 0, 
+            border: 'none',
+            background: 'transparent',
+            fontSize: '15px',
+          }}
         />
       </Header>
-      <Content style={{ padding: '24px', background: '#f0f2f5', minHeight: 'calc(100vh - 128px)' }}>
-        {children}
+      
+      <Content style={{ 
+        padding: '48px 48px 64px', 
+        background: '#F8F9FA',
+        minHeight: 'calc(100vh - 144px)',
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          {children}
+        </div>
       </Content>
-      <Footer style={{ textAlign: 'center', background: '#fff', padding: '16px' }}>
+      
+      <Footer style={{ 
+        textAlign: 'center', 
+        background: '#FFFFFF', 
+        padding: '32px',
+        borderTop: '1px solid #E9ECEF',
+        color: '#6C757D',
+        fontSize: '14px',
+      }}>
         本周之声 ©2024
       </Footer>
     </AntLayout>

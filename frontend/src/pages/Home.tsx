@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Card, Input, Row, Col, Button, Spin, Empty, message } from 'antd';
-import { SearchOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { Card, Input, Row, Col, Button, Spin, Empty } from 'antd';
+import { SearchOutlined, SoundOutlined } from '@ant-design/icons';
 import { listVoices, type Voice } from '../api/voices';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,14 +12,10 @@ const Home = () => {
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
 
-  console.log('Home component rendered');
-
   const loadVoices = async () => {
     setLoading(true);
     try {
-      console.log('Loading voices...');
       const response = await listVoices({ search: searchText || undefined });
-      console.log('Voices response:', response);
       if (response && response.success) {
         setVoices(response.data.voices || []);
       } else {
@@ -27,7 +23,6 @@ const Home = () => {
       }
     } catch (error: any) {
       console.error('加载角色列表失败:', error);
-      // 不显示错误消息，避免干扰
       setVoices([]);
     } finally {
       setLoading(false);
@@ -35,7 +30,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log('Home useEffect triggered');
     loadVoices();
   }, []);
 
@@ -45,13 +39,30 @@ const Home = () => {
   };
 
   return (
-    <div style={{ padding: '20px', minHeight: '400px' }}>
-      <h1 style={{ marginBottom: '24px', fontSize: '24px', fontWeight: 'bold', color: '#333' }}>
-        本周之声 - 语音角色平台
-      </h1>
-      <div style={{ marginBottom: '24px' }}>
+    <div>
+      <div style={{ marginBottom: '48px' }}>
+        <h1 style={{ 
+          margin: '0 0 16px 0', 
+          fontSize: '32px', 
+          fontWeight: 600,
+          color: '#2C3E50',
+          letterSpacing: '-0.5px',
+        }}>
+          本周之声
+        </h1>
+        <p style={{ 
+          margin: 0, 
+          fontSize: '16px', 
+          color: '#6C757D',
+          lineHeight: '1.6',
+        }}>
+          探索和管理您的语音角色
+        </p>
+      </div>
+
+      <div style={{ marginBottom: '32px' }}>
         <Search
-          placeholder="搜索角色..."
+          placeholder="搜索角色"
           allowClear
           enterButton={<SearchOutlined />}
           size="large"
@@ -61,40 +72,98 @@ const Home = () => {
       </div>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '80px 0',
+        }}>
           <Spin size="large" />
-          <div style={{ marginTop: '16px', color: '#666' }}>加载中...</div>
+          <div style={{ marginTop: '16px', color: '#6C757D', fontSize: '15px' }}>
+            加载中...
+          </div>
         </div>
       ) : voices.length === 0 ? (
         <Empty 
-          description="暂无角色，点击上方'创建角色'开始创建" 
+          description={
+            <span style={{ color: '#6C757D', fontSize: '15px' }}>
+              暂无角色，点击导航栏"创建角色"开始创建
+            </span>
+          }
           image={Empty.PRESENTED_IMAGE_SIMPLE}
+          style={{ padding: '80px 0' }}
         />
       ) : (
-        <Row gutter={[16, 16]}>
+        <Row gutter={[24, 24]}>
           {voices.map((voice) => (
             <Col xs={24} sm={12} md={8} lg={6} key={voice.id}>
               <Card
                 hoverable
-                actions={[
-                  <Button
-                    type="link"
-                    icon={<PlayCircleOutlined />}
-                    onClick={() => navigate(`/voices/${voice.id}`)}
-                  >
-                    查看详情
-                  </Button>,
-                ]}
+                bordered={false}
+                style={{ 
+                  borderRadius: '12px',
+                  boxShadow: '0 1px 3px rgba(44, 62, 80, 0.08)',
+                  transition: 'all 0.3s ease',
+                }}
+                bodyStyle={{ padding: '24px' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(44, 62, 80, 0.12)';
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(44, 62, 80, 0.08)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                <Card.Meta
-                  title={`Voice ${voice.id.slice(0, 8)}...`}
-                  description={
-                    <div>
-                      <div>模型: {voice.model}</div>
-                      <div>创建时间: {new Date(voice.createdAt).toLocaleDateString()}</div>
-                    </div>
-                  }
-                />
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ 
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '16px',
+                  }}>
+                    <SoundOutlined style={{ fontSize: '24px', color: '#FFFFFF' }} />
+                  </div>
+                  
+                  <h3 style={{ 
+                    margin: '0 0 8px 0',
+                    fontSize: '16px',
+                    fontWeight: 600,
+                    color: '#2C3E50',
+                  }}>
+                    Voice {voice.id.slice(0, 8)}
+                  </h3>
+                  
+                  <div style={{ 
+                    fontSize: '13px', 
+                    color: '#6C757D',
+                    marginBottom: '4px',
+                  }}>
+                    模型: {voice.model}
+                  </div>
+                  
+                  <div style={{ 
+                    fontSize: '13px', 
+                    color: '#ADB5BD',
+                  }}>
+                    {new Date(voice.createdAt).toLocaleDateString('zh-CN')}
+                  </div>
+                </div>
+
+                <Button
+                  type="primary"
+                  block
+                  onClick={() => navigate(`/voices/${voice.id}`)}
+                  style={{ 
+                    height: '40px',
+                    borderRadius: '8px',
+                    fontWeight: 500,
+                  }}
+                >
+                  查看详情
+                </Button>
               </Card>
             </Col>
           ))}

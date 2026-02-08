@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, Input, Select, Button, message, Space, Row, Col, Divider } from 'antd';
-import { SoundOutlined, DownloadOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { SoundOutlined, DownloadOutlined, PlayCircleOutlined, AudioOutlined } from '@ant-design/icons';
 import { generateTTS } from '../api/tts';
 import { listVoices, type Voice } from '../api/voices';
 
@@ -56,7 +56,7 @@ const TTSGeneration = () => {
         if (response.data.audioBase64) {
           setAudioBase64(response.data.audioBase64);
         }
-        message.success('生成成功！');
+        message.success('生成成功');
       }
     } catch (error: any) {
       message.error(error.message || '生成失败');
@@ -78,125 +78,179 @@ const TTSGeneration = () => {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      {/* 示例展示区域 */}
+      {/* Demo Section */}
       <Card 
-        title={
-          <span>
-            <PlayCircleOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-            效果示例
-          </span>
-        }
-        style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
-        headStyle={{ color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.2)' }}
-        bodyStyle={{ background: '#fff' }}
+        bordered={false}
+        style={{ 
+          marginBottom: '32px',
+          background: '#FFFFFF',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(44, 62, 80, 0.08)',
+        }}
+        bodyStyle={{ padding: '48px' }}
       >
-        <div style={{ padding: '16px 0' }}>
-          <div style={{ marginBottom: '16px', fontSize: '14px', color: '#666' }}>
-            以下是语音克隆效果对比示例，展示原始音频与克隆后的音频效果
-          </div>
-          
-          <Row gutter={24}>
-            {/* 原始音频 */}
-            <Col xs={24} md={12}>
-              <Card 
-                size="small" 
-                title="原始音频"
-                style={{ height: '100%' }}
-                headStyle={{ background: '#f0f2f5', fontWeight: 'bold' }}
-              >
-                <div style={{ padding: '16px 0' }}>
-                  <div style={{ marginBottom: '12px', color: '#666' }}>
-                    <strong>说话人：</strong>MCY
-                  </div>
-                  <div style={{ marginBottom: '12px', color: '#666' }}>
-                    <strong>时长：</strong>约 5 秒
-                  </div>
-                  <div style={{ 
-                    marginBottom: '12px', 
-                    padding: '8px', 
-                    background: '#fafafa', 
-                    borderLeft: '3px solid #1890ff',
-                    fontSize: '13px',
-                    color: '#333'
-                  }}>
-                    <strong>文本：</strong>"欢迎来到周周黑客松，来开始你的表演吧"
-                  </div>
-                  <audio 
-                    controls 
-                    style={{ width: '100%' }}
-                    preload="metadata"
-                  >
-                    <source src="/mcy.wav" type="audio/wav" />
-                    您的浏览器不支持音频播放
-                  </audio>
-                </div>
-              </Card>
-            </Col>
-
-            {/* 克隆音频 */}
-            <Col xs={24} md={12}>
-              <Card 
-                size="small" 
-                title="克隆后音频"
-                style={{ height: '100%' }}
-                headStyle={{ background: '#e6f7ff', fontWeight: 'bold', color: '#1890ff' }}
-              >
-                <div style={{ padding: '16px 0' }}>
-                  <div style={{ marginBottom: '12px', color: '#666' }}>
-                    <strong>克隆模型：</strong>Codec 模型
-                  </div>
-                  <div style={{ marginBottom: '12px', color: '#666' }}>
-                    <strong>效果：</strong>高度还原
-                  </div>
-                  <div style={{ 
-                    marginBottom: '12px', 
-                    padding: '8px', 
-                    background: '#f6ffed', 
-                    borderLeft: '3px solid #52c41a',
-                    fontSize: '13px',
-                    color: '#333',
-                    lineHeight: '1.6'
-                  }}>
-                    <strong>文本：</strong>"一个让克隆声音真正活起来的智能人格语音生态：带情绪、长期记忆、互动体验与场景化价值。"
-                  </div>
-                  <audio 
-                    controls 
-                    style={{ width: '100%' }}
-                    preload="metadata"
-                  >
-                    <source src="/mcy-clone.wav" type="audio/wav" />
-                    您的浏览器不支持音频播放
-                  </audio>
-                </div>
-              </Card>
-            </Col>
-          </Row>
-
-          <div style={{ 
-            marginTop: '16px', 
-            padding: '12px', 
-            background: '#f6ffed', 
-            border: '1px solid #b7eb8f',
-            borderRadius: '4px',
-            fontSize: '13px',
-            color: '#52c41a'
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          marginBottom: '32px',
+        }}>
+          <PlayCircleOutlined style={{ fontSize: '24px', color: '#3498DB', marginRight: '12px' }} />
+          <h2 style={{ 
+            margin: 0, 
+            fontSize: '20px', 
+            fontWeight: 600,
+            color: '#2C3E50',
+            letterSpacing: '-0.3px',
           }}>
-            💡 提示：通过上传您的音频样本，系统可以生成与您声音相似的语音角色
-          </div>
+            效果示例
+          </h2>
         </div>
+        
+        <div style={{ marginBottom: '32px', color: '#6C757D', fontSize: '15px', lineHeight: '1.6' }}>
+          以下展示语音克隆的效果对比，原始音频与克隆后的音频
+        </div>
+        
+        <Row gutter={32}>
+          {/* Original Audio */}
+          <Col xs={24} lg={12}>
+            <div style={{ 
+              padding: '32px',
+              background: '#F8F9FA',
+              borderRadius: '8px',
+              height: '100%',
+            }}>
+              <div style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '24px',
+              }}>
+                <AudioOutlined style={{ fontSize: '18px', color: '#6C757D', marginRight: '8px' }} />
+                <h3 style={{ 
+                  margin: 0, 
+                  fontSize: '16px', 
+                  fontWeight: 600,
+                  color: '#2C3E50',
+                }}>
+                  原始音频
+                </h3>
+              </div>
+              
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '4px' }}>说话人</div>
+                <div style={{ fontSize: '15px', color: '#2C3E50' }}>MCY</div>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '4px' }}>文本内容</div>
+                <div style={{ 
+                  fontSize: '14px', 
+                  color: '#2C3E50',
+                  lineHeight: '1.6',
+                  padding: '12px',
+                  background: '#FFFFFF',
+                  borderRadius: '6px',
+                  border: '1px solid #E9ECEF',
+                }}>
+                  "欢迎来到周周黑客松，来开始你的表演吧"
+                </div>
+              </div>
+              
+              <audio 
+                controls 
+                style={{ width: '100%', height: '40px' }}
+                preload="metadata"
+              >
+                <source src="/mcy.wav" type="audio/wav" />
+              </audio>
+            </div>
+          </Col>
+
+          {/* Cloned Audio */}
+          <Col xs={24} lg={12}>
+            <div style={{ 
+              padding: '32px',
+              background: '#F8F9FA',
+              borderRadius: '8px',
+              height: '100%',
+            }}>
+              <div style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '24px',
+              }}>
+                <SoundOutlined style={{ fontSize: '18px', color: '#3498DB', marginRight: '8px' }} />
+                <h3 style={{ 
+                  margin: 0, 
+                  fontSize: '16px', 
+                  fontWeight: 600,
+                  color: '#2C3E50',
+                }}>
+                  克隆后音频
+                </h3>
+              </div>
+              
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '4px' }}>克隆模型</div>
+                <div style={{ fontSize: '15px', color: '#2C3E50' }}>step-tts-2</div>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '4px' }}>文本内容</div>
+                <div style={{ 
+                  fontSize: '14px', 
+                  color: '#2C3E50',
+                  lineHeight: '1.6',
+                  padding: '12px',
+                  background: '#FFFFFF',
+                  borderRadius: '6px',
+                  border: '1px solid #E9ECEF',
+                }}>
+                  "一个让克隆声音真正活起来的智能人格语音生态：带情绪、长期记忆、互动体验与场景化价值。"
+                </div>
+              </div>
+              
+              <audio 
+                controls 
+                style={{ width: '100%', height: '40px' }}
+                preload="metadata"
+              >
+                <source src="/mcy-clone.wav" type="audio/wav" />
+              </audio>
+            </div>
+          </Col>
+        </Row>
       </Card>
 
-      <Divider />
+      {/* TTS Generation */}
+      <Card 
+        bordered={false}
+        style={{ 
+          background: '#FFFFFF',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(44, 62, 80, 0.08)',
+        }}
+        bodyStyle={{ padding: '48px' }}
+      >
+        <h2 style={{ 
+          margin: '0 0 32px 0', 
+          fontSize: '20px', 
+          fontWeight: 600,
+          color: '#2C3E50',
+          letterSpacing: '-0.3px',
+        }}>
+          生成语音
+        </h2>
 
-      {/* TTS 生成区域 */}
-      <Card title="TTS音频生成">
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space direction="vertical" size={24} style={{ width: '100%' }}>
           <div>
-            <div style={{ marginBottom: '8px' }}>选择Voice</div>
+            <div style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 500, color: '#2C3E50' }}>
+              选择语音角色
+            </div>
             <Select
               value={selectedVoiceId}
               onChange={setSelectedVoiceId}
               style={{ width: '100%' }}
+              size="large"
               placeholder="请选择语音角色"
               showSearch
               filterOption={(input, option) =>
@@ -212,8 +266,15 @@ const TTSGeneration = () => {
           </div>
 
           <div>
-            <div style={{ marginBottom: '8px' }}>模型选择</div>
-            <Select value={model} onChange={setModel} style={{ width: '100%' }}>
+            <div style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 500, color: '#2C3E50' }}>
+              模型选择
+            </div>
+            <Select 
+              value={model} 
+              onChange={setModel} 
+              style={{ width: '100%' }}
+              size="large"
+            >
               <Option value="step-tts-2">step-tts-2</Option>
               <Option value="step-tts-mini">step-tts-mini</Option>
               <Option value="step-tts-vivid">step-tts-vivid</Option>
@@ -222,12 +283,15 @@ const TTSGeneration = () => {
           </div>
 
           <div>
-            <div style={{ marginBottom: '8px' }}>输入文本</div>
+            <div style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 500, color: '#2C3E50' }}>
+              输入文本
+            </div>
             <TextArea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder="请输入要转换为语音的文本"
               rows={6}
+              style={{ fontSize: '15px' }}
             />
           </div>
 
@@ -238,21 +302,39 @@ const TTSGeneration = () => {
             onClick={handleGenerate}
             loading={generating}
             block
+            style={{ 
+              height: '48px',
+              fontSize: '15px',
+              fontWeight: 500,
+              borderRadius: '8px',
+            }}
           >
             生成音频
           </Button>
 
           {(audioUrl || audioBase64) && (
-            <Card title="生成结果">
+            <div style={{ 
+              padding: '24px',
+              background: '#F8F9FA',
+              borderRadius: '8px',
+              marginTop: '8px',
+            }}>
+              <div style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 500, color: '#2C3E50' }}>
+                生成结果
+              </div>
               <audio
                 controls
-                style={{ width: '100%', marginBottom: '16px' }}
+                style={{ width: '100%', marginBottom: '16px', height: '40px' }}
                 src={audioUrl || `data:audio/mp3;base64,${audioBase64}`}
               />
-              <Button icon={<DownloadOutlined />} onClick={handleDownload}>
+              <Button 
+                icon={<DownloadOutlined />} 
+                onClick={handleDownload}
+                style={{ borderRadius: '6px' }}
+              >
                 下载音频
               </Button>
-            </Card>
+            </div>
           )}
         </Space>
       </Card>

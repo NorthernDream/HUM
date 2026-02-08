@@ -82,7 +82,7 @@ const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) =
 
       const tx = await contract.mint(await signer.getAddress(), voiceId, embeddingHash, tokenURI);
       message.info("Transaction submitted: " + tx.hash);
-      
+
       await tx.wait();
       setTxHash(tx.hash);
       message.success("Voice NFT Minted Successfully!");
@@ -96,20 +96,92 @@ const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) =
   };
 
   return (
-    <Card title="Mint Voice NFT on 0G Testnet" style={{ marginTop: 20 }}>
-      <div style={{ marginBottom: 16 }}>
-        <Text strong>Voice ID:</Text> <Text code>{voiceId}</Text>
-        <br />
-        <Text strong>Embedding Hash:</Text> <Text code>{embeddingHash}</Text>
+    <Card 
+      bordered={false}
+      style={{ 
+        marginTop: 32,
+        background: '#FFFFFF',
+        borderRadius: '12px',
+        boxShadow: '0 1px 3px rgba(44, 62, 80, 0.08)',
+      }}
+      bodyStyle={{ padding: '32px' }}
+    >
+      <h3 style={{ 
+        margin: '0 0 24px 0', 
+        fontSize: '18px', 
+        fontWeight: 600,
+        color: '#2C3E50',
+      }}>
+        Mint Voice NFT on 0G Testnet
+      </h3>
+      
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 12 }}>
+          <span style={{ fontSize: '13px', color: '#6C757D', fontWeight: 500 }}>Voice ID</span>
+          <div style={{ 
+            marginTop: 4,
+            padding: '8px 12px',
+            background: '#F8F9FA',
+            borderRadius: '6px',
+            fontFamily: 'monospace',
+            fontSize: '13px',
+            color: '#2C3E50',
+            wordBreak: 'break-all',
+          }}>
+            {voiceId}
+          </div>
+        </div>
+        
+        <div>
+          <span style={{ fontSize: '13px', color: '#6C757D', fontWeight: 500 }}>Embedding Hash</span>
+          <div style={{ 
+            marginTop: 4,
+            padding: '8px 12px',
+            background: '#F8F9FA',
+            borderRadius: '6px',
+            fontFamily: 'monospace',
+            fontSize: '13px',
+            color: '#2C3E50',
+            wordBreak: 'break-all',
+          }}>
+            {embeddingHash}
+          </div>
+        </div>
       </div>
-      <Button type="primary" onClick={handleMint} loading={loading}>
+      
+      <Button 
+        type="primary" 
+        onClick={handleMint} 
+        loading={loading}
+        size="large"
+        style={{ 
+          height: '48px',
+          borderRadius: '8px',
+          fontWeight: 500,
+        }}
+      >
         Mint NFT
       </Button>
+      
       {txHash && (
-        <div style={{ marginTop: 10 }}>
-          <Text type="success">Minted! </Text>
-          <a href={`${CHAIN_CONFIG.blockExplorerUrls[0]}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
-            View on Explorer
+        <div style={{ 
+          marginTop: 20,
+          padding: '16px',
+          background: '#F8F9FA',
+          borderRadius: '8px',
+        }}>
+          <span style={{ color: '#27AE60', fontWeight: 500, fontSize: '14px' }}>Minted Successfully! </span>
+          <a 
+            href={`${CHAIN_CONFIG.blockExplorerUrls[0]}/tx/${txHash}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              color: '#3498DB',
+              textDecoration: 'none',
+              fontSize: '14px',
+            }}
+          >   
+            View on Explorer →
           </a>
         </div>
       )}

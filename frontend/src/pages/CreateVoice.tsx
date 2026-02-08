@@ -7,7 +7,7 @@ import {
   message,
   Space,
 } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { uploadFile } from '../api/files';
 import { createVoice } from '../api/voices';
 import AudioRecorder from '../components/AudioRecorder';
@@ -23,22 +23,20 @@ const CreateVoice = () => {
   const [voiceResult, setVoiceResult] = useState<any>(null);
 
   const handleFileSelect = (file: File) => {
-    // 格式校验
     const validTypes = ['audio/mpeg', 'audio/wav', 'audio/mp3', 'audio/webm'];
     if (!validTypes.includes(file.type)) {
       message.error('只支持 MP3、WAV 或 WebM 格式');
       return false;
     }
 
-    // 大小限制
     if (file.size > 10 * 1024 * 1024) {
       message.error('文件大小不能超过 10MB');
       return false;
     }
 
     setFile(file);
-    setVoiceResult(null); // 清除之前的结果
-    return false; // 阻止自动上传
+    setVoiceResult(null);
+    return false;
   };
 
   const handleCreateVoice = async () => {
@@ -51,7 +49,6 @@ const CreateVoice = () => {
     setCurrentStep('upload');
 
     try {
-      // 1. 上传文件
       const uploadResponse = await uploadFile(file, (progressEvent) => {
         const percent = progressEvent.total
           ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -65,16 +62,15 @@ const CreateVoice = () => {
 
       setCurrentStep('processing');
 
-      // 2. 创建语音角色（自动生成 embedding）
       const voiceResponse = await createVoice({
         fileId: uploadResponse.data.fileId,
-        model: 'codec', // 使用 Codec 模型
+        model: 'codec',
       });
 
       if (voiceResponse.success) {
         setCurrentStep('complete');
         setVoiceResult(voiceResponse.data);
-        message.success('语音角色创建成功！');
+        message.success('语音角色创建成功');
       }
     } catch (error: any) {
       message.error(error.message || '创建失败');
@@ -93,22 +89,53 @@ const CreateVoice = () => {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <Card title="创建语音角色">
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          {/* 音频上传/录音区域 */}
+      <Card 
+        bordered={false}
+        style={{ 
+          background: '#FFFFFF',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(44, 62, 80, 0.08)',
+        }}
+        bodyStyle={{ padding: '48px' }}
+      >
+        <h2 style={{ 
+          margin: '0 0 8px 0', 
+          fontSize: '20px', 
+          fontWeight: 600,
+          color: '#2C3E50',
+          letterSpacing: '-0.3px',
+        }}>
+          创建语音角色
+        </h2>
+        <p style={{ 
+          margin: '0 0 32px 0', 
+          fontSize: '14px', 
+          color: '#6C757D',
+          lineHeight: '1.6',
+        }}>
+          使用 Codec 模型将音频编码成 Embedding
+        </p>
+
+        <Space direction="vertical" size={32} style={{ width: '100%' }}>
+          {/* Upload Section */}
           <div>
-            <div style={{ marginBottom: '16px', fontSize: '16px', fontWeight: 500 }}>
+            <div style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 500, color: '#2C3E50' }}>
               上传或录制音频（1-10秒）
             </div>
             
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Space direction="vertical" size={16} style={{ width: '100%' }}>
               <Upload
                 beforeUpload={handleFileSelect}
                 accept="audio/mpeg,audio/wav,audio/mp3,audio/webm"
                 showUploadList={false}
                 disabled={processing}
               >
-                <Button icon={<UploadOutlined />} disabled={processing}>
+                <Button 
+                  icon={<UploadOutlined />} 
+                  disabled={processing}
+                  size="large"
+                  style={{ borderRadius: '8px', height: '48px', fontSize: '15px' }}
+                >
                   选择音频文件
                 </Button>
               </Upload>
@@ -122,35 +149,53 @@ const CreateVoice = () => {
             </Space>
 
             {file && (
-              <div style={{ marginTop: '16px', padding: '16px', background: '#f5f5f5', borderRadius: '8px' }}>
-                <div style={{ marginBottom: '8px' }}>
-                  <strong>文件名:</strong> {file.name}
+              <div style={{ 
+                marginTop: '24px', 
+                padding: '24px', 
+                background: '#F8F9FA', 
+                borderRadius: '8px',
+              }}>
+                <div style={{ marginBottom: '12px' }}>
+                  <span style={{ fontSize: '13px', color: '#6C757D' }}>文件名：</span>
+                  <span style={{ fontSize: '14px', color: '#2C3E50', marginLeft: '8px' }}>{file.name}</span>
                 </div>
-                <div style={{ marginBottom: '8px' }}>
-                  <strong>大小:</strong> {(file.size / 1024).toFixed(2)} KB
+                <div style={{ marginBottom: '16px' }}>
+                  <span style={{ fontSize: '13px', color: '#6C757D' }}>大小：</span>
+                  <span style={{ fontSize: '14px', color: '#2C3E50', marginLeft: '8px' }}>
+                    {(file.size / 1024).toFixed(2)} KB
+                  </span>
                 </div>
                 <AudioWaveform file={file} />
               </div>
             )}
 
             {processing && currentStep === 'upload' && (
-              <div style={{ marginTop: '16px' }}>
-                <div style={{ marginBottom: '8px' }}>上传中...</div>
-                <Progress percent={uploadProgress} />
+              <div style={{ marginTop: '24px' }}>
+                <div style={{ marginBottom: '12px', fontSize: '14px', color: '#6C757D' }}>上传中...</div>
+                <Progress 
+                  percent={uploadProgress} 
+                  strokeColor="#3498DB"
+                  trailColor="#E9ECEF"
+                />
               </div>
             )}
 
             {processing && currentStep === 'processing' && (
-              <div style={{ marginTop: '16px' }}>
-                <Progress percent={100} status="active" />
-                <div style={{ marginTop: '8px', textAlign: 'center', color: '#1890ff' }}>
+              <div style={{ marginTop: '24px' }}>
+                <Progress 
+                  percent={100} 
+                  status="active"
+                  strokeColor="#3498DB"
+                  trailColor="#E9ECEF"
+                />
+                <div style={{ marginTop: '12px', textAlign: 'center', color: '#3498DB', fontSize: '14px' }}>
                   正在生成语音角色...
                 </div>
               </div>
             )}
           </div>
 
-          {/* 操作按钮 */}
+          {/* Action Button */}
           {!voiceResult && (
             <Button
               type="primary"
@@ -159,41 +204,68 @@ const CreateVoice = () => {
               loading={processing}
               disabled={!file || processing}
               block
+              style={{ 
+                height: '48px',
+                fontSize: '15px',
+                fontWeight: 500,
+                borderRadius: '8px',
+              }}
             >
               {processing ? '创建中...' : '创建语音角色'}
             </Button>
           )}
 
-          {/* 创建成功结果 */}
+          {/* Success Result */}
           {voiceResult && (
-            <Card 
-              title="✓ 创建成功" 
-              style={{ background: '#f6ffed', borderColor: '#b7eb8f' }}
-            >
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <div style={{ 
+              padding: '32px',
+              background: '#F8F9FA',
+              borderRadius: '8px',
+            }}>
+              <div style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '24px',
+              }}>
+                <CheckCircleOutlined style={{ fontSize: '24px', color: '#27AE60', marginRight: '12px' }} />
+                <h3 style={{ 
+                  margin: 0, 
+                  fontSize: '18px', 
+                  fontWeight: 600,
+                  color: '#2C3E50',
+                }}>
+                  创建成功
+                </h3>
+              </div>
+
+              <Space direction="vertical" size={20} style={{ width: '100%' }}>
                 <div>
-                  <strong>Voice ID:</strong> 
+                  <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '8px' }}>Voice ID</div>
                   <div style={{ 
-                    marginTop: '4px', 
-                    padding: '8px', 
-                    background: '#fff', 
-                    borderRadius: '4px',
+                    padding: '12px', 
+                    background: '#FFFFFF', 
+                    borderRadius: '6px',
                     fontFamily: 'monospace',
-                    wordBreak: 'break-all'
+                    fontSize: '14px',
+                    color: '#2C3E50',
+                    wordBreak: 'break-all',
+                    border: '1px solid #E9ECEF',
                   }}>
                     {voiceResult.voiceId}
                   </div>
                 </div>
 
                 <div>
-                  <strong>Embedding Hash:</strong>
+                  <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '8px' }}>Embedding Hash</div>
                   <div style={{ 
-                    marginTop: '4px', 
-                    padding: '8px', 
-                    background: '#fff', 
-                    borderRadius: '4px',
+                    padding: '12px', 
+                    background: '#FFFFFF', 
+                    borderRadius: '6px',
                     fontFamily: 'monospace',
-                    wordBreak: 'break-all'
+                    fontSize: '14px',
+                    color: '#2C3E50',
+                    wordBreak: 'break-all',
+                    border: '1px solid #E9ECEF',
                   }}>
                     {voiceResult.embeddingHash}
                   </div>
@@ -201,20 +273,32 @@ const CreateVoice = () => {
 
                 {voiceResult.sampleAudio && (
                   <div>
-                    <strong>试听音频:</strong>
+                    <div style={{ fontSize: '13px', color: '#6C757D', marginBottom: '8px' }}>试听音频</div>
                     <audio 
                       controls 
                       src={`data:audio/wav;base64,${voiceResult.sampleAudio}`}
-                      style={{ width: '100%', marginTop: '8px' }}
+                      style={{ width: '100%', height: '40px' }}
                     />
                   </div>
                 )}
 
-                <Button type="primary" onClick={handleReset} block>
+                <Button 
+                  type="primary" 
+                  onClick={handleReset} 
+                  block
+                  size="large"
+                  style={{ 
+                    height: '48px',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    borderRadius: '8px',
+                    marginTop: '8px',
+                  }}
+                >
                   创建新角色
                 </Button>
               </Space>
-            </Card>
+            </div>
           )}
         </Space>
       </Card>
