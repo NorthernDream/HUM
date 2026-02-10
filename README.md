@@ -1,3 +1,39 @@
+<!-- 荣誉徽章区域 - 放在 README 最顶部 -->
+<div align="center">
+
+<!-- 主徽章：使用 shields.io 自定义样式 + 渐变效果 -->
+<a href="#-荣誉认证">
+  <img src="https://img.shields.io/badge/🏆%20AI³%20Growth%20Journey-第%208%20期%20冠军-ea580c?style=for-the-badge&labelColor=7c2d12&color=gradient&logo=fire&logoColor=white" alt="AI³ Growth Journey 第8期第一名" />
+</a>
+
+<!-- 副徽章：技术认可 -->
+<a href="#-荣誉认证">
+  <img src="https://img.shields.io/badge/🥇-Top%20Project%20Award-f59e0b?style=for-the-badge&labelColor=92400e" alt="Top Project" />
+</a>
+
+</div>
+
+<!-- 动态荣誉横幅 -->
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,16,18,20&height=180&section=header&text=🏆%20AI³%20Growth%20Journey%20第8期冠军&fontSize=32&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Where%20voices%20are%20not%20just%20heard,%20but%20remembered.&descAlignY=55&descSize=16">
+    <source media="(prefers-color-scheme: light)" srcset="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,16,18,20&height=180&section=header&text=🏆%20AI³%20Growth%20Journey%20第8期冠军&fontSize=32&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Where%20voices%20are%20not%20just%20heard,%20but%20remembered.&descAlignY=55&descSize=16">
+    <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,16,18,20&height=180&section=header&text=🏆%20AI³%20Growth%20Journey%20第8期冠军&fontSize=32&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Where%20voices%20are%20not%20just%20heard,%20but%20remembered.&descAlignY=55&descSize=16" alt="荣誉横幅" width="100%">
+  </picture>
+</div>
+
+<br>
+
+<!-- 项目标题 -->
+<div align="center">
+  
+  # 🎙 HUM｜人声余温
+  **Where voices are not just heard, but remembered.**
+  
+</div>
+
+---
+
 
 # 🎙 HUM｜人声余温
 **Where voices are not just heard, but remembered.**
