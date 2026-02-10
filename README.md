@@ -35,11 +35,6 @@
 ---
 
 
-# 🎙 HUM｜人声余温
-**Where voices are not just heard, but remembered.**
-
-
-
 ---
 
 ## 一、项目故事 · Why Voices Exists
