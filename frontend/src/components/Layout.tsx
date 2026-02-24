@@ -86,11 +86,11 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
       </Header>
       
-      <Content style={{ 
-        padding: '56px 48px 80px', 
+      <Content style={{
+        padding: '56px 48px 80px',
         background: 'transparent',
-        minHeight: 'calc(100vh - 160px)',
         position: 'relative',
+        overflow: 'hidden',
         display: 'flex',
         justifyContent: 'center',
       }}>
