@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, Input, Select, Button, message, Space, Row, Col } from 'antd';
-import { SoundOutlined, DownloadOutlined, PlayCircleOutlined, AudioOutlined } from '@ant-design/icons';
+import { Card, Input, Select, Button, message, Space, Row, Col, Alert } from 'antd';
+import { SoundOutlined, DownloadOutlined, PlayCircleOutlined, AudioOutlined, WalletOutlined, LoadingOutlined } from '@ant-design/icons';
 import { generateTTS } from '../api/tts';
 import { listVoices, type Voice } from '../api/voices';
 import { theme } from '../styles/theme';
@@ -14,6 +14,7 @@ const TTSGeneration = () => {
   const [model, setModel] = useState('cosyvoice-v2');
   const [inputText, setInputText] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [paymentStep, setPaymentStep] = useState<'idle' | 'signing' | 'paid'>('idle');
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [audioBase64, setAudioBase64] = useState<string | null>(null);
 
@@ -43,6 +44,9 @@ const TTSGeneration = () => {
     }
 
     setGenerating(true);
+    setPaymentStep('idle');
+    // 提示用户可能需要在钱包中签名支付
+    const paymentHint = setTimeout(() => setPaymentStep('signing'), 800);
     try {
       const response = await generateTTS({
         voiceId: selectedVoiceId,
@@ -50,6 +54,8 @@ const TTSGeneration = () => {
         model,
       });
 
+      clearTimeout(paymentHint);
+      setPaymentStep('paid');
       if (response.success) {
         if (response.data.audioUrl) {
           setAudioUrl(response.data.audioUrl);
@@ -60,6 +66,8 @@ const TTSGeneration = () => {
         message.success('生成成功');
       }
     } catch (error: any) {
+      clearTimeout(paymentHint);
+      setPaymentStep('idle');
       message.error(error.message || '生成失败');
     } finally {
       setGenerating(false);
@@ -140,7 +148,7 @@ const TTSGeneration = () => {
               }}>
                 <AudioOutlined style={{ 
                   fontSize: '22px', 
-                  color: theme.colors.sand, 
+                  color: theme.colors.accent,
                   marginRight: theme.spacing.sm 
                 }} />
                 <h3 style={{ 
@@ -310,7 +318,7 @@ const TTSGeneration = () => {
           生成语音
         </h2>
 
-        <Space direction="vertical" size={theme.spacing.lg} style={{ width: '100%' }}>
+        <Space direction="vertical" size={theme.spacingNum.lg} style={{ width: '100%' }}>
           <div>
             <div style={{ 
               marginBottom: theme.spacing.sm, 
@@ -386,15 +394,30 @@ const TTSGeneration = () => {
             />
           </div>
 
+          <Alert
+            type="info"
+            showIcon
+            icon={<WalletOutlined />}
+            message={
+              paymentStep === 'signing'
+                ? <span><LoadingOutlined spin style={{ marginRight: 6 }} />请在钱包中确认签名（Base Sepolia · 0.01 USDC）</span>
+                : paymentStep === 'paid'
+                ? '✓ 支付成功'
+                : '每次生成消耗 0.01 USDC（Base Sepolia 测试网），需要钱包签名'
+            }
+            style={{ borderRadius: theme.borderRadius.small }}
+          />
+
           <Button
             type="primary"
             size="large"
-            icon={<SoundOutlined />}
+            icon={generating ? <LoadingOutlined spin /> : <SoundOutlined />}
             onClick={handleGenerate}
-            loading={generating}
+            loading={false}
+            disabled={generating}
             block
             className="gradient-button"
-            style={{ 
+            style={{
               height: '56px',
               fontSize: '16px',
               fontWeight: 600,
@@ -402,7 +425,7 @@ const TTSGeneration = () => {
               fontFamily: theme.typography.body,
             }}
           >
-            生成音频
+            {generating ? (paymentStep === 'signing' ? '等待钱包签名…' : '生成中…') : '生成音频'}
           </Button>
 
           {(audioUrl || audioBase64) && (
