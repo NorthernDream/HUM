@@ -11,7 +11,7 @@ const { Option } = Select;
 const TTSGeneration = () => {
   const [voices, setVoices] = useState<Voice[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
-  const [model, setModel] = useState('step-tts-mini');
+  const [model, setModel] = useState('cosyvoice-v2');
   const [inputText, setInputText] = useState('');
   const [generating, setGenerating] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -243,12 +243,12 @@ const TTSGeneration = () => {
                   textTransform: 'uppercase',
                   letterSpacing: '0.5px',
                 }}>克隆模型</div>
-                <div style={{ 
-                  fontSize: '17px', 
+                <div style={{
+                  fontSize: '17px',
                   color: theme.colors.sage,
                   fontWeight: 600,
                   fontFamily: theme.typography.mono,
-                }}>step-tts-2</div>
+                }}>cosyvoice-v2</div>
               </div>
               
               <div style={{ marginBottom: theme.spacing.lg }}>
@@ -352,16 +352,13 @@ const TTSGeneration = () => {
             }}>
               模型选择
             </div>
-            <Select 
-              value={model} 
-              onChange={setModel} 
+            <Select
+              value={model}
+              onChange={setModel}
               style={{ width: '100%' }}
               size="large"
             >
-              <Option value="step-tts-2">step-tts-2</Option>
-              <Option value="step-tts-mini">step-tts-mini</Option>
-              <Option value="step-tts-vivid">step-tts-vivid</Option>
-              <Option value="step-audio-2">step-audio-2</Option>
+              <Option value="cosyvoice-v2">cosyvoice-v2（推荐）</Option>
             </Select>
           </div>
 

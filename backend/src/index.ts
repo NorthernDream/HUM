@@ -15,9 +15,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 静态文件服务 - 提供TTS生成的音频文件
+// 静态文件服务 - 上传的音频文件（用于试听）
+const uploadsDir = process.env.STORAGE_PATH
+  ? path.resolve(process.env.STORAGE_PATH)
+  : path.join(__dirname, '../uploads');
+app.use('/api/files/uploads', express.static(uploadsDir));
+
+// 静态文件服务 - TTS生成的音频文件
 const ttsOutputDir = process.env.STORAGE_PATH
-  ? path.join(process.env.STORAGE_PATH, 'tts_outputs')
+  ? path.join(path.resolve(process.env.STORAGE_PATH), 'tts_outputs')
   : path.join(__dirname, '../tts_outputs');
 app.use('/api/files/tts', express.static(ttsOutputDir));
 

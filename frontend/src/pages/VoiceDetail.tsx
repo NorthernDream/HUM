@@ -33,7 +33,13 @@ const VoiceDetail = () => {
   };
 
   const handleDownload = () => {
-    message.info('下载功能待实现');
+    if (!voice?.sampleAudioPath) return;
+    const a = document.createElement('a');
+    a.href = voice.sampleAudioPath;
+    a.download = `${voice.name || voice.id}_sample.wav`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   if (loading) {
@@ -141,7 +147,7 @@ const VoiceDetail = () => {
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
               }}>
-                Step Voice ID
+                CosyVoice ID
               </div>
               <div style={{ 
                 padding: theme.spacing.md,
@@ -288,14 +294,16 @@ const VoiceDetail = () => {
             }}>
               试听音频
             </div>
-            <audio controls style={{ 
-              width: '100%', 
-              height: '48px', 
-              marginBottom: theme.spacing.md,
-              borderRadius: theme.borderRadius.small,
-            }}>
-              <source src={voice.sampleAudioPath} type="audio/wav" />
-            </audio>
+            <audio
+              controls
+              src={voice.sampleAudioPath}
+              style={{
+                width: '100%',
+                height: '48px',
+                marginBottom: theme.spacing.md,
+                borderRadius: theme.borderRadius.small,
+              }}
+            />
             <Button
               icon={<DownloadOutlined />}
               onClick={handleDownload}

@@ -40,4 +40,6 @@ tts_outputs/
 .docker/
 
 
-
+# ai
+.claude/
+.cursor/

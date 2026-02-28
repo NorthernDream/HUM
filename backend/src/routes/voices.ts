@@ -1,6 +1,13 @@
 import express, { Request, Response } from 'express';
+import path from 'path';
 import voiceService from '../services/voiceServiceMemory';
 import { sendSuccess, sendError } from '../utils/response';
+
+// 将 sampleAudioPath（本地文件路径）转换为浏览器可访问的 URL
+const toAudioUrl = (filePath: string | undefined): string | undefined => {
+  if (!filePath) return undefined;
+  return `/api/files/uploads/${path.basename(filePath)}`;
+};
 
 const router = express.Router();
 
@@ -44,7 +51,7 @@ router.get('/:voiceId', async (req: Request, res: Response) => {
     if (!voice) {
       return sendError(res, '角色不存在', 404);
     }
-    sendSuccess(res, voice);
+    sendSuccess(res, { ...voice, sampleAudioPath: toAudioUrl(voice.sampleAudioPath) });
   } catch (error: any) {
     sendError(res, error.message || '获取角色失败', 500, error);
   }
@@ -58,7 +65,8 @@ router.get('/', async (req: Request, res: Response) => {
     const search = req.query.search as string;
 
     const result = await voiceService.listVoices({ page, limit, search });
-    sendSuccess(res, result);
+    const voices = result.voices.map(v => ({ ...v, sampleAudioPath: toAudioUrl(v.sampleAudioPath) }));
+    sendSuccess(res, { ...result, voices });
   } catch (error: any) {
     sendError(res, error.message || '查询失败', 500, error);
   }

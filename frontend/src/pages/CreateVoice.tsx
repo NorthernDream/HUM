@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   Upload,
@@ -25,6 +25,18 @@ const CreateVoice = () => {
   const [processing, setProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState<ProcessingStep>('upload');
   const [voiceResult, setVoiceResult] = useState<any>(null);
+  const [audioObjectUrl, setAudioObjectUrl] = useState<string | null>(null);
+
+  // 每次文件变更时创建/释放 Object URL（Edge & Chrome 均兼容）
+  useEffect(() => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setAudioObjectUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setAudioObjectUrl(null);
+    }
+  }, [file]);
 
   const handleFileSelect = (file: File) => {
     const validTypes = ['audio/mpeg', 'audio/wav', 'audio/mp3', 'audio/webm'];
@@ -78,7 +90,15 @@ const CreateVoice = () => {
         message.success('语音角色创建成功');
       }
     } catch (error: any) {
-      message.error(error.message || '创建失败');
+      const errMsg: string = error.message || '创建失败';
+      if (errMsg.includes('音频质量') || errMsg.includes('silent') || errMsg.includes('AudioSilent')) {
+        message.error({
+          content: '音频质量不符合要求：请录制 10~15 秒清晰语音，确保包含至少 5 秒以上的连续朗读',
+          duration: 6,
+        });
+      } else {
+        message.error(errMsg);
+      }
       setCurrentStep('upload');
     } finally {
       setProcessing(false);
@@ -125,7 +145,7 @@ const CreateVoice = () => {
           使用 Codec 模型将音频编码成 Embedding
         </p>
 
-        <Space direction="vertical" size={theme.spacing.xl} style={{ width: '100%' }}>
+        <Space direction="vertical" size={theme.spacingNum.xl} style={{ width: '100%' }}>
           {/* Name Input Section */}
           <div>
             <div style={{ 
@@ -165,10 +185,10 @@ const CreateVoice = () => {
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
             }}>
-              上传或录制音频（1-10秒）
+              上传或录制音频（建议 10-15 秒清晰语音）
             </div>
             
-            <Space direction="vertical" size={theme.spacing.md} style={{ width: '100%' }}>
+            <Space direction="vertical" size={theme.spacingNum.md} style={{ width: '100%' }}>
               <Upload
                 beforeUpload={handleFileSelect}
                 accept="audio/mpeg,audio/wav,audio/mp3,audio/webm"
@@ -238,6 +258,22 @@ const CreateVoice = () => {
                   </span>
                 </div>
                 <AudioWaveform file={file} />
+                {audioObjectUrl && (
+                  <div style={{ marginTop: theme.spacing.sm }}>
+                    {/* 原生 audio 标签，Edge & Chrome 均原生支持 WAV / WebM / MP3 */}
+                    <audio
+                      controls
+                      style={{ width: '100%', height: '40px', borderRadius: '6px' }}
+                      preload="metadata"
+                    >
+                      <source src={audioObjectUrl} type={file.type || 'audio/wav'} />
+                      {/* Edge 兼容：提供额外类型 fallback */}
+                      {file.type === 'audio/webm' && (
+                        <source src={audioObjectUrl} type="audio/ogg" />
+                      )}
+                    </audio>
+                  </div>
+                )}
               </div>
             )}
 
@@ -249,23 +285,23 @@ const CreateVoice = () => {
                   color: theme.colors.mutedText,
                   fontFamily: theme.typography.body,
                 }}>上传中...</div>
-                <Progress 
-                  percent={uploadProgress} 
+                <Progress
+                  percent={uploadProgress}
                   strokeColor={theme.colors.sage}
-                  trailColor={`${theme.colors.sage}20`}
-                  strokeWidth={8}
+                  railColor={`${theme.colors.sage}20`}
+                  size={8}
                 />
               </div>
             )}
 
             {processing && currentStep === 'processing' && (
               <div style={{ marginTop: theme.spacing.lg }}>
-                <Progress 
-                  percent={100} 
+                <Progress
+                  percent={100}
                   status="active"
                   strokeColor={theme.colors.sage}
-                  trailColor={`${theme.colors.sage}20`}
-                  strokeWidth={8}
+                  railColor={`${theme.colors.sage}20`}
+                  size={8}
                 />
                 <div style={{ 
                   marginTop: theme.spacing.sm, 
@@ -330,7 +366,7 @@ const CreateVoice = () => {
                 </h3>
               </div>
 
-              <Space direction="vertical" size={theme.spacing.lg} style={{ width: '100%' }}>
+              <Space direction="vertical" size={theme.spacingNum.lg} style={{ width: '100%' }}>
                 <div>
                   <div style={{ 
                     fontSize: '13px', 
