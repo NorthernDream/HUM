@@ -1,7 +1,7 @@
 import { Layout as AntLayout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { HomeOutlined, PlusOutlined, SoundOutlined, UserOutlined } from '@ant-design/icons';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 const { Header, Content, Footer } = AntLayout;
 

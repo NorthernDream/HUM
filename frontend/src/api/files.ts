@@ -1,5 +1,5 @@
 import apiClient from './client';
-import axios, { type AxiosProgressEvent } from 'axios';
+import { type AxiosProgressEvent } from 'axios';
 
 export interface FileUploadResponse {
   success: boolean;

@@ -3,7 +3,7 @@ import { Button, message, Modal, Typography } from 'antd';
 import { AudioOutlined, StopOutlined } from '@ant-design/icons';
 import { audioBufferToWav } from '../utils/audio';
 
-const { Paragraph, Title } = Typography;
+const { Title } = Typography;
 
 interface AudioRecorderProps {
   onRecordComplete: (file: File) => void;

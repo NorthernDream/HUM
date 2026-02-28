@@ -13,7 +13,7 @@ interface VoiceNFTMintProps {
 
 const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) => {
   const [loading, setLoading] = useState(false);
-  const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
+  const [_mintedTokenId, setMintedTokenId] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
 
   // Manage & Restore State
@@ -304,7 +304,7 @@ const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) =
                     </Card>
                 )}
 
-                <Divider orientation="left" style={{ borderColor: '#e8e8e8' }}>Transfer Ownership</Divider>
+                <Divider style={{ borderColor: '#e8e8e8' }}>Transfer Ownership</Divider>
                 <Input 
                     placeholder="Recipient Address (0x...)" 
                     value={recipientAddress}

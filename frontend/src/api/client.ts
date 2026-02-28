@@ -81,7 +81,7 @@ apiClient.interceptors.response.use(
 
           // 生成 X-PAYMENT 头（会调起钱包签名）
           const paymentHeader = await createPaymentHeader(
-            walletClient,
+            walletClient as any,
             paymentData.x402Version,
             paymentData.accepts[0],
           );

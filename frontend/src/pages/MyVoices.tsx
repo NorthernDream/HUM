@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Card, List, Button, Popconfirm, message, Empty, Typography, Input, Space } from 'antd';
+import { Card, List, Button, Popconfirm, message, Empty, Input, Space } from 'antd';
 import { DeleteOutlined, PlayCircleOutlined, EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { listVoices, deleteVoice, updateVoice, type Voice } from '../api/voices';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../styles/theme';
 
-const { Text } = Typography;
 
 const MyVoices = () => {
   const [voices, setVoices] = useState<Voice[]>([]);

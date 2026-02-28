@@ -37,7 +37,7 @@ app.use('/api/tts', ttsRoutes);
 app.use('/api/embeddings', embeddingRoutes);
 
 // 健康检查
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -46,12 +46,12 @@ const frontendDist = path.join(__dirname, '../../public');
 app.use(express.static(frontendDist));
 
 // SPA 路由回退：所有非 /api 请求返回 index.html
-app.get(/^(?!\/api).*/, (req, res) => {
+app.get(/^(?!\/api).*/, (_req, res) => {
   res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
 // 错误处理中间件
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err);
   res.status(err.status || 500).json({
     success: false,
