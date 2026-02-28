@@ -14,11 +14,14 @@ RUN npm install
 # 复制源代码
 COPY . .
 
+# 构建 TypeScript
+RUN npm run build
+
 # 暴露端口
 EXPOSE 8000
 
 # 启动命令
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
 
 
 

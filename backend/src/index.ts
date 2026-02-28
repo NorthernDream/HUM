@@ -11,7 +11,10 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // 中间件
-app.use(cors());
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000'];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -36,6 +39,15 @@ app.use('/api/embeddings', embeddingRoutes);
 // 健康检查
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// 托管前端静态文件（生产环境）
+const frontendDist = path.join(__dirname, '../../public');
+app.use(express.static(frontendDist));
+
+// SPA 路由回退：所有非 /api 请求返回 index.html
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
 // 错误处理中间件
