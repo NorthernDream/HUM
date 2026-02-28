@@ -59,10 +59,16 @@ const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) =
     setMintedTokenId(null);
     setTxHash(null);
     try {
-      const { signer } = await getProviderAndSigner();
-      
+      const { provider, signer } = await getProviderAndSigner();
+
       if (VOICE_NFT_ADDRESS.startsWith("0x0000000000000000000000000000000000000000")) {
          throw new Error("Contract not deployed yet.");
+      }
+
+      // Check contract exists on-chain (testnet may have been reset)
+      const code = await provider.getCode(VOICE_NFT_ADDRESS);
+      if (code === '0x') {
+        throw new Error(`Contract not found at ${VOICE_NFT_ADDRESS}. The testnet may have been reset — please redeploy the contract.`);
       }
 
       const contract = new ethers.Contract(VOICE_NFT_ADDRESS, VoiceNFTArtifact.abi, signer);
@@ -77,18 +83,46 @@ const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) =
       };
       const tokenURI = "data:application/json;base64," + btoa(JSON.stringify(metadata));
 
-      const tx = await contract.mint(await signer.getAddress(), voiceId, embeddingHash, tokenURI, {
-        gasLimit: 500000 // Manually set gas limit to avoid estimation errors on testnet
-      });
-      message.info("Transaction submitted: " + tx.hash);
+      // Static pre-flight call to surface the actual revert reason before spending gas
+      try {
+        await contract.mint.staticCall(await signer.getAddress(), voiceId, embeddingHash, tokenURI);
+      } catch (staticErr: any) {
+        const reason = staticErr.reason || staticErr.data?.message || staticErr.message || "unknown revert";
+        throw new Error(`Simulation failed: ${reason}`);
+      }
 
-      const receipt = await tx.wait();
-      setTxHash(tx.hash);
+      // 0G testnet: baseFeePerGas is ~7 wei but eth_gasPrice / eth_maxPriorityFeePerGas
+      // both return ~4 Gwei. Wallets (OKX/MetaMask) estimate maxFeePerGas from baseFeePerGas
+      // and get ~14 wei — far below the node minimum. Fix: explicitly set maxFeePerGas and
+      // maxPriorityFeePerGas from eth_gasPrice so the wallet cannot override them.
+      const feeData = await provider.getFeeData();
+      const gasPrice = feeData.gasPrice ?? BigInt("4000000000"); // ~4 Gwei
+      // maxFeePerGas must be >= baseFeePerGas(7) + maxPriorityFeePerGas; using 2× gasPrice is safe
+      const maxFeePerGasHex      = '0x' + (gasPrice * 2n).toString(16);
+      const maxPriorityFeePerGasHex = '0x' + gasPrice.toString(16);
+      const from = await signer.getAddress();
+      const calldata = contract.interface.encodeFunctionData('mint', [from, voiceId, embeddingHash, tokenURI]);
+
+      const txHash: string = await (window as any).ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from,
+          to: VOICE_NFT_ADDRESS,
+          gas: '0xF4240',              // 1 000 000
+          maxFeePerGas: maxFeePerGasHex,              // ~8 Gwei
+          maxPriorityFeePerGas: maxPriorityFeePerGasHex, // ~4 Gwei
+          data: calldata,
+        }],
+      });
+      message.info("Transaction submitted: " + txHash);
+
+      const receipt = await provider.waitForTransaction(txHash);
+      setTxHash(txHash);
 
       // Find Token ID from logs
       // Event: Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
       // topic[0] is hash, topic[1] is from, topic[2] is to, topic[3] is tokenId
-      const transferLog = receipt?.logs.find((log: any) => 
+      const transferLog = receipt?.logs.find((log: any) =>
         log.address.toLowerCase() === VOICE_NFT_ADDRESS.toLowerCase() && log.topics.length === 4
       );
 
@@ -104,7 +138,6 @@ const VoiceNFTMint: React.FC<VoiceNFTMintProps> = ({ voiceId, embeddingHash }) =
     } catch (error: any) {
       console.error(error);
       let errorMsg = error.reason || error.message || "Unknown error";
-      // Handle weird RPC error returning calldata
       if (typeof errorMsg === 'string' && errorMsg.startsWith('0x')) {
           errorMsg = "Transaction failed. Please check your gas balance or network connection.";
       }
